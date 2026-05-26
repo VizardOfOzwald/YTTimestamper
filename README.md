@@ -18,12 +18,6 @@ Browser extension (Chrome + Firefox, Manifest V3) that lets you add multiple tim
 - UI is isolated to a single fixed panel and runs only on YouTube watch pages.
 - Toolbar popup (extension icon) can control markers/loop on the active YouTube tab.
 
-## Install in Chrome (developer mode)
-
-1. Open `chrome://extensions`.
-2. Enable **Developer mode**.
-3. Click **Load unpacked**.
-4. Select this folder: `Youtube_Timestamp_Manipulator`.
 
 ## Install in Firefox (temporary add-on)
 
