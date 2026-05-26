@@ -1,0 +1,123 @@
+#yt-timestamp-looper-root {
+  --ytl-accent: #5865f2;
+  --ytl-accent-border: #6f7bff;
+  --ytl-accent-soft: rgba(88, 101, 242, 0.25);
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 300px;
+  max-height: 70vh;
+  overflow: auto;
+  z-index: 2147483647;
+  background: rgba(18, 18, 18, 0.95);
+  color: #f1f1f1;
+  border: 1px solid var(--ytl-accent-border);
+  border-radius: 12px;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+#yt-timestamp-looper-root * {
+  box-sizing: border-box;
+}
+
+.ytl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--ytl-accent-border);
+  background: linear-gradient(180deg, var(--ytl-accent-soft), rgba(0, 0, 0, 0));
+}
+
+.ytl-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.ytl-minimize-btn {
+  border: 1px solid #3a3a3a;
+  background: #222;
+  color: #f1f1f1;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 2px 8px;
+}
+
+.ytl-content {
+  padding: 10px 12px 12px;
+}
+
+.ytl-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ytl-btn,
+.ytl-select,
+.ytl-input {
+  border: 1px solid var(--ytl-accent-border);
+  background: #202020;
+  color: #f1f1f1;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+.ytl-btn {
+  cursor: pointer;
+}
+
+.ytl-btn:hover {
+  background: var(--ytl-accent-soft);
+}
+
+.ytl-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ytl-select,
+.ytl-input {
+  width: 100%;
+}
+
+.ytl-auto-hide-seconds {
+  max-width: 88px;
+}
+
+.ytl-markers {
+  margin-top: 10px;
+  border-top: 1px solid var(--ytl-accent-border);
+  padding-top: 10px;
+}
+
+.ytl-marker-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.ytl-marker-time {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ytl-meta {
+  font-size: 11px;
+  color: #bcbcbc;
+}
+
+.ytl-hidden .ytl-content {
+  display: none;
+}
+
+#yt-timestamp-looper-root.ytl-fully-hidden {
+  display: none;
+}

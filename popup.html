@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Timestamp Looper</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup">
+      <h1 class="title">Timestamp Looper</h1>
+      <p id="status" class="status">Checking active tab...</p>
+
+      <div class="row">
+        <button id="openPanelBtn" class="btn">Open panel</button>
+        <button id="addMarkerBtn" class="btn">Add marker</button>
+      </div>
+
+      <div class="row">
+        <input id="typedTimestampInput" class="input" type="text" placeholder="mm:ss or hh:mm:ss" />
+        <button id="addTypedMarkerBtn" class="btn">Add typed</button>
+      </div>
+
+      <div class="row">
+        <select id="startSelect" class="select"></select>
+        <select id="endSelect" class="select"></select>
+      </div>
+
+      <div class="row">
+        <button id="jumpStartBtn" class="btn">Jump start</button>
+        <button id="jumpEndBtn" class="btn">Jump end</button>
+      </div>
+
+      <div class="row">
+        <button id="toggleLoopBtn" class="btn primary">Start loop</button>
+      </div>
+
+      <div class="row">
+        <label for="themeColorInput" class="inline-label">Panel color</label>
+        <input id="themeColorInput" class="input" type="color" value="#5865f2" />
+      </div>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
