@@ -26,10 +26,6 @@
     endMarkerId: "",
     minimized: false,
     fullyHidden: false,
-    autoHideEnabled: true,
-    autoHideSeconds: 8,
-    hideMiniEnabled: true,
-    hideMiniSeconds: 8,
     themeColor: DEFAULT_THEME_COLOR,
     clickAddMode: false,
     autoJumpEnabled: false,
@@ -156,10 +152,7 @@
       data[currentVideoId] = {
         markers: state.markers,
         minimized: state.minimized,
-        autoHideEnabled: state.autoHideEnabled,
-        autoHideSeconds: state.autoHideSeconds,
-        hideMiniEnabled: state.hideMiniEnabled,
-        hideMiniSeconds: state.hideMiniSeconds,
+        fullyHidden: state.fullyHidden,
         jumpModules: state.jumpModules
       };
       await storageSet({
@@ -194,14 +187,6 @@
           .filter((moduleState) => moduleState.fromMarkerId || moduleState.toMarkerId)
       : [];
     const jumpModules = savedJumpModules.length > 0 ? savedJumpModules : [createEmptyJumpModule()];
-    const parsedAutoHideSeconds = Number(record.autoHideSeconds);
-    const autoHideSeconds = Number.isFinite(parsedAutoHideSeconds)
-      ? Math.min(MAX_AUTO_HIDE_SECONDS, Math.max(MIN_AUTO_HIDE_SECONDS, Math.floor(parsedAutoHideSeconds)))
-      : 8;
-    const parsedHideMiniSeconds = Number(record.hideMiniSeconds);
-    const hideMiniSeconds = Number.isFinite(parsedHideMiniSeconds)
-      ? Math.min(MAX_AUTO_HIDE_SECONDS, Math.max(MIN_AUTO_HIDE_SECONDS, Math.floor(parsedHideMiniSeconds)))
-      : 8;
     state = {
       markers: markers
         .filter((m) => typeof m.time === "number" && Number.isFinite(m.time))
@@ -215,12 +200,7 @@
       startMarkerId: "",
       endMarkerId: "",
       minimized: Boolean(record.minimized),
-      fullyHidden: false,
-      autoHideEnabled:
-        typeof record.autoHideEnabled === "boolean" ? record.autoHideEnabled : true,
-      autoHideSeconds,
-      hideMiniEnabled: typeof record.hideMiniEnabled === "boolean" ? record.hideMiniEnabled : true,
-      hideMiniSeconds,
+      fullyHidden: Boolean(record.fullyHidden),
       themeColor: normalizeThemeColor(settings.themeColor),
       clickAddMode: false,
       autoJumpEnabled: false,
@@ -407,50 +387,21 @@
     if (!ui.root) return;
     if (state.fullyHidden) return;
     if (state.minimized) {
-      if (!state.hideMiniEnabled) return;
       autoHideTimer = window.setTimeout(() => {
         setFullyHidden(true);
-      }, state.hideMiniSeconds * 1000);
+      }, 8 * 1000);
       return;
     }
-    if (!state.autoHideEnabled) return;
     autoHideTimer = window.setTimeout(() => {
       state.minimized = true;
       scheduleSave();
       render();
-    }, state.autoHideSeconds * 1000);
+    }, 8 * 1000);
   }
 
   function onPanelInteraction() {
     if (state.fullyHidden) return;
     scheduleAutoHide();
-  }
-
-  function setAutoHideEnabled(enabled) {
-    state.autoHideEnabled = Boolean(enabled);
-    scheduleSave();
-    render();
-  }
-
-  function setAutoHideSeconds(rawValue) {
-    state.autoHideSeconds = normalizeAutoHideSeconds(rawValue);
-    scheduleSave();
-    render();
-  }
-
-  function setHideMiniEnabled(enabled) {
-    state.hideMiniEnabled = Boolean(enabled);
-    if (!state.hideMiniEnabled) {
-      setFullyHidden(false);
-    }
-    scheduleSave();
-    render();
-  }
-
-  function setHideMiniSeconds(rawValue) {
-    state.hideMiniSeconds = normalizeAutoHideSeconds(rawValue);
-    scheduleSave();
-    render();
   }
 
   function setThemeColor(rawColor) {
@@ -632,50 +583,6 @@
     clickModeBtn.addEventListener("click", toggleClickAddMode);
     row6.append(clickModeBtn);
 
-    const row7 = document.createElement("div");
-    row7.className = "ytl-row";
-    const autoHideToggleLabel = document.createElement("label");
-    autoHideToggleLabel.className = "ytl-meta";
-    autoHideToggleLabel.textContent = "Auto-hide";
-    const autoHideToggle = document.createElement("input");
-    autoHideToggle.type = "checkbox";
-    autoHideToggle.addEventListener("change", (event) => {
-      setAutoHideEnabled(event.target.checked);
-    });
-    const autoHideSecondsInput = document.createElement("input");
-    autoHideSecondsInput.className = "ytl-input ytl-auto-hide-seconds";
-    autoHideSecondsInput.type = "number";
-    autoHideSecondsInput.min = String(MIN_AUTO_HIDE_SECONDS);
-    autoHideSecondsInput.max = String(MAX_AUTO_HIDE_SECONDS);
-    autoHideSecondsInput.step = "1";
-    autoHideSecondsInput.placeholder = "Seconds";
-    autoHideSecondsInput.addEventListener("change", (event) => {
-      setAutoHideSeconds(event.target.value);
-    });
-    row7.append(autoHideToggleLabel, autoHideToggle, autoHideSecondsInput);
-
-    const row8 = document.createElement("div");
-    row8.className = "ytl-row";
-    const hideMiniToggleLabel = document.createElement("label");
-    hideMiniToggleLabel.className = "ytl-meta";
-    hideMiniToggleLabel.textContent = "Hide mini too";
-    const hideMiniToggle = document.createElement("input");
-    hideMiniToggle.type = "checkbox";
-    hideMiniToggle.addEventListener("change", (event) => {
-      setHideMiniEnabled(event.target.checked);
-    });
-    const hideMiniSecondsInput = document.createElement("input");
-    hideMiniSecondsInput.className = "ytl-input ytl-auto-hide-seconds";
-    hideMiniSecondsInput.type = "number";
-    hideMiniSecondsInput.min = String(MIN_AUTO_HIDE_SECONDS);
-    hideMiniSecondsInput.max = String(MAX_AUTO_HIDE_SECONDS);
-    hideMiniSecondsInput.step = "1";
-    hideMiniSecondsInput.placeholder = "Seconds";
-    hideMiniSecondsInput.addEventListener("change", (event) => {
-      setHideMiniSeconds(event.target.value);
-    });
-    row8.append(hideMiniToggleLabel, hideMiniToggle, hideMiniSecondsInput);
-
     const jumpTimelineWrap = document.createElement("div");
     jumpTimelineWrap.className = "ytl-markers";
     const jumpTimelineMeta = document.createElement("div");
@@ -719,8 +626,6 @@
       row4,
       row5,
       row6,
-      row7,
-      row8,
       jumpTimelineWrap,
       meta,
       markersWrap
@@ -736,10 +641,6 @@
     ui = {
       root,
       miniBtn,
-      autoHideToggle,
-      autoHideSecondsInput,
-      hideMiniToggle,
-      hideMiniSecondsInput,
       startSelect,
       endSelect,
       loopBtn,
@@ -844,9 +745,6 @@
   function render() {
     if (!ui.root) return;
     applyThemeColorToRoot();
-    if (state.fullyHidden && !state.minimized) {
-      state.fullyHidden = false;
-    }
     if (state.minimized) {
       ui.root.classList.add("ytl-hidden");
     } else {
@@ -854,12 +752,6 @@
     }
     setFullyHidden(state.fullyHidden);
     ui.miniBtn.textContent = state.minimized ? "Open" : "Hide";
-    ui.autoHideToggle.checked = state.autoHideEnabled;
-    ui.autoHideSecondsInput.value = String(state.autoHideSeconds);
-    ui.autoHideSecondsInput.disabled = !state.autoHideEnabled;
-    ui.hideMiniToggle.checked = state.hideMiniEnabled;
-    ui.hideMiniSecondsInput.value = String(state.hideMiniSeconds);
-    ui.hideMiniSecondsInput.disabled = !state.hideMiniEnabled;
 
     fillMarkerSelect(ui.startSelect, state.startMarkerId, "Start marker");
     fillMarkerSelect(ui.endSelect, state.endMarkerId, "End marker");
@@ -1010,6 +902,13 @@
         render();
         onPanelInteraction();
         sendResponse({ ok: true, state: getSnapshot() });
+        return;
+      }
+      if (message.type === "YTL_HIDE_PANEL") {
+        setFullyHidden(true);
+        render();
+        sendResponse({ ok: true, state: getSnapshot() });
+        return;
       }
     });
   }
@@ -1019,6 +918,8 @@
     const video = getVideoElement();
     if (!videoId || !video) return;
 
+    const wasFullyHidden = state.fullyHidden;
+    
     currentVideoId = videoId;
     videoElement = video;
     await loadStateForVideo(videoId);
@@ -1026,8 +927,11 @@
     setDefaultRangeIfPossible();
     buildUI();
     render();
-    onPanelInteraction();
     attachVideoListeners(videoElement);
+    
+    if (wasFullyHidden) {
+      setFullyHidden(true);
+    }
   }
 
   async function refreshWhenNavigationChanges() {
