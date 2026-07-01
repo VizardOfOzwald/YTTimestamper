@@ -11,6 +11,7 @@
   const ui = {
     status: document.getElementById("status"),
     openPanelBtn: document.getElementById("openPanelBtn"),
+    closePanelBtn: document.getElementById("closePanelBtn"),
     addMarkerBtn: document.getElementById("addMarkerBtn"),
     typedTimestampInput: document.getElementById("typedTimestampInput"),
     addTypedMarkerBtn: document.getElementById("addTypedMarkerBtn"),
@@ -57,6 +58,7 @@
 
   function setDisabled(isDisabled) {
     ui.openPanelBtn.disabled = isDisabled;
+    ui.closePanelBtn.disabled = isDisabled;
     ui.addMarkerBtn.disabled = isDisabled;
     ui.typedTimestampInput.disabled = isDisabled;
     ui.addTypedMarkerBtn.disabled = isDisabled;
@@ -198,6 +200,7 @@
   }
 
   ui.openPanelBtn.addEventListener("click", () => sendAndRefresh({ type: "YTL_SHOW_PANEL" }));
+  ui.closePanelBtn.addEventListener("click", () => sendAndRefresh({ type: "YTL_HIDE_PANEL" }));
   ui.addMarkerBtn.addEventListener("click", () => sendAndRefresh({ type: "YTL_ADD_MARKER" }));
   ui.addTypedMarkerBtn.addEventListener("click", async () => {
     const seconds = parseTimestampInput(ui.typedTimestampInput.value);
