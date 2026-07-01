@@ -52,7 +52,17 @@
   }
 
   function isYouTubeWatchUrl(url) {
-    return typeof url === "string" && url.includes("https://www.youtube.com/watch");
+    if (typeof url !== "string") return false;
+    try {
+      const parsed = new URL(url);
+      const hostname = parsed.hostname.toLowerCase();
+      const pathname = parsed.pathname.toLowerCase();
+      // Support youtube.com/watch, youtube.com/shorts, and m.youtube.com
+      if (!hostname.includes("youtube.com")) return false;
+      return pathname.startsWith("/watch") || pathname.startsWith("/shorts");
+    } catch (e) {
+      return false;
+    }
   }
 
   function setDisabled(isDisabled) {
