@@ -797,7 +797,38 @@
 
   function attachVideoListeners(video) {
     video.removeEventListener("timeupdate", onVideoTimeUpdate);
+    video.removeEventListener("error", onVideoError);
+    video.removeEventListener("play", onVideoPlay);
+    video.removeEventListener("pause", onVideoPause);
+    
     video.addEventListener("timeupdate", onVideoTimeUpdate, { passive: true });
+    video.addEventListener("error", onVideoError, { passive: true });
+    video.addEventListener("play", onVideoPlay, { passive: true });
+    video.addEventListener("pause", onVideoPause, { passive: true });
+  }
+
+  function onVideoError() {
+    if (!videoElement) return;
+    const error = videoElement.error;
+    if (error) {
+      console.warn("[YT Timestamp Looper] Video error detected:", error.message || error.code);
+      if (state.loopEnabled || state.autoJumpEnabled) {
+        state.loopEnabled = false;
+        state.autoJumpEnabled = false;
+        render();
+      }
+    }
+  }
+
+  function onVideoPlay() {
+    if (!videoElement) return;
+    clearAutoHideTimer();
+    setFullyHidden(false);
+  }
+
+  function onVideoPause() {
+    if (!videoElement) return;
+    scheduleAutoHide();
   }
 
   function onDocumentClickCapture(event) {
